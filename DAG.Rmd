@@ -1,0 +1,105 @@
+---
+title: "DAG"
+author: "Fiona Grimm"
+date: "29/06/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggdag)
+theme_set(theme_dag())
+```
+
+# Directed acyclic graph (DAG)
+DAG showing known causes of confounding when comparing
+hospital mortality risk across study populations from 
+before and during the pandemic
+
+```{r}
+hip_dag <- dagify(COMP ~ PROC,
+                  PROC ~ FRACTYPE, 
+                  QUAL ~ PAND,
+                  AGE ~ PAND,
+                  SEX ~ PAND,
+                  COVID ~ PAND,
+                  PROC ~ HEALTH + FRACTYPE + PAND,
+                  DEATH ~ HEALTH + QUAL + COMP + AGE + COVID + SEX,
+
+#create labels for variables ("\n" denotes a space)
+       labels = c("DEATH" = "Death", 
+                  "HEALTH" = "Existing\nconditions",
+                  "AGE" = "Age",
+                  "SEX" = "Sex",
+                  "COVID" = "COVID-19",
+                  "COMP" = "Complications",
+                  "PROC" = "Procedure type",
+                  "FRACTYPE" = "Fracture type",
+                  "PAND" = "Pandemic",
+                  "QUAL" = "Quality of care"),
+
+#identify exposure and outcome     
+                  exposure = "QUAL",
+                  outcome = "DEATH",
+                  latent = c("PAND", "FRACTYPE", "COMP"))
+```
+
+Notes:
+
+* Confounder: common cause of both the exposure and the outcome
+* Mediator: caused by the exposure and in turn causes the outcome (i.e. falls on a causal path between the exposure and outcome)
+* Competing exposure: cause of the outcome that is neither caused by nor causes the exposure
+
+A confounding path (or indirect path or backdoor path) between an exposure and an outcome is a path that passes against the flow of causality through one or more confounders.
+
+A collider path between an exposure and an outcome is a path that passes against the flow of causality through one or more colliders, i.e. nodes that receive two ormore arcs.
+
+```{r}
+#plot DAG using the ggdag function
+ggdag(hip_dag, text = FALSE, use_labels = "label", edge_type="link")
+```
+
+
+```{r}
+ggsave("hipfrac_mortality_dag.png", width = 9, heigh = 5)
+
+```
+
+
+# Open paths 
+
+```{r}
+ggdag_paths(hip_dag, text = FALSE, use_labels = "label", shadow = TRUE, 
+
+#directed=false indicates all paths, regardless of direction            
+            directed=FALSE,  
+
+#changing node/text sizes for aesthetics             
+            node_size = 8,   text_size = 2, stylized = TRUE)
+```
+
+
+# Directed paths
+
+```{r}
+ggdag_paths(hip_dag, text = FALSE, use_labels = "label", shadow = TRUE, 
+
+#directed=true indicates directed paths            
+            directed=TRUE,  
+            node_size = 10,   text_size = 2.8, stylized = TRUE)
+```
+
+# Minimally sufficient set
+
+```{r}
+
+
+ggdag_adjustment_set(hip_dag, text = FALSE, use_labels = "label", 
+                     shadow = TRUE, node_size = 10,   text_size = 2.8, stylized = TRUE)
+```
+
+
+```{r}
+ggsave("hipfrac_mortality_minadjustset.png", width = 9, heigh = 5)
+
+```
