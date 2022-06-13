@@ -1,10 +1,5 @@
 ### 
 # Regression analysis
-# 1. Lasso
-# 2. Fit null model and full model
-# 2. Check functional form of variables
-# 4. Model fit
-
 ###
 
 library(tidyverse)
