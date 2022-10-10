@@ -1,11 +1,14 @@
 
 # Indirect effect of the COVID-19 pandemic on hospital mortality in hip fracture patients
 
-#### Project Status: [In pgrogess]
+#### Project Status: [completed]
 
 ## Project Description
 
 Hip fractures are a leading cause of disability and death among older people. The COVID-19 pandemic led to rapid restructuring of orthopaedic care pathways in the NHS in England, in order to manage pressures on bed availability. This analysis aimed to investigate the indirect effect of the pandemic on hospital mortality among older hip fracture patients, admitted from cares homes or from the community. 
+
+## Outputs
+The findings have been published in [BMJ Quality & Safety](https://qualitysafety.bmj.com/content/early/2022/08/01/bmjqs-2022-014896.abstract). 
 
 ## Data source
 
